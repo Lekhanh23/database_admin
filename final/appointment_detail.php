@@ -11,21 +11,10 @@
 </head>
 
 <body>
-  <header class="page-header">
-    <div class="logo">
-      <img src="assets:icons/healthcare.png" alt="Hospital Logo" class="logo-image">
-      <span class="logo-text">Hospital's Name</span>
-    </div>
-  </header>
-  <div class="page-header">
-    <div class="logo">
-      <span>Admin-View Appointments-information</span>
-    </div>
-  </div>
-
   <div class="container">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" style = "width: 200px">
+      <div class="site-title">Hospital's Name</div>
       <ul class="sidebar-menu">
         <li><a href="index.php">Home</a></li>
         <li><a href="manage_users.php">Manage Users</a></li>

@@ -1,4 +1,38 @@
+<?php
+include 'config.php';
 
+if (!isset($_GET['id'])) {
+    echo "User ID is missing.";
+    exit();
+}
+
+$id = intval($_GET['id']);
+
+// Lấy thông tin user để hiển thị
+$stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+if (!$user) {
+    echo "User not found.";
+    exit();
+}
+// Cập nhật khi gửi form
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $full_name = $_POST['full_name'];
+    $role = $_POST['role'];
+    $status = $_POST['status'];
+
+    $stmt = $conn->prepare("UPDATE users SET full_name = ?, role = ?, status = ? WHERE id = ?");
+    $stmt->bind_param("sssi", $full_name, $role, $status, $id);
+    $stmt->execute();
+
+    header("Location: manage_users_detail.php?id=$id");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,16 +45,10 @@
 </head>
 
 <body>
-  <header class="page-header">
-    <div class="logo">
-      <img src="assets:icons/healthcare.png" alt="Hospital Logo" class="logo-image">
-      <span class="logo-text">Hospital's Name</span>
-    </div>
-  </header>
-
   <div class="container">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" style = "width: 120px">
+      <div class="site-title">Hospital's Name</div>
       <ul class="sidebar-menu">
         <li><a href="index.php">Home</a></li>
         <li class="active"><a href="manage_users.php">Manage Users</a></li>
@@ -32,45 +60,41 @@
     </div>
 
     <!-- Main Content -->
-    <div class="main-content">
+    <main class="main-content">
       <div class="header">
-        <h2>Edit Users</h2>
+        <h2>Edit User</h2>
       </div>
 
-      <div class="card">
-        <form class="add-user-form">
-          <div class="form-group">
-            <label for="fullname">Full Name</label>
-            <input type="text" id="fullname" name="fullname" placeholder="Enter user's name">
-          </div>
+      <form method="post">
+        <div class="form-group">
+          <label for="full_name">Full Name</label>
+          <input type="text" name="full_name" class="form-control" value="<?= htmlspecialchars($user['full_name']) ?>" required>
+        </div>
 
-          <div class="form-group">
-            <label for="role">Role</label>
-            <select id="role" name="role">
-              <option value="">Select a role</option>
-              <option value="doctor">Doctor</option>
-              <option value="nurse">Nurse</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label for="role">Role</label>
+          <select name="role" class="form-control">
+            <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
+            <option value="doctor" <?= $user['role'] == 'doctor' ? 'selected' : '' ?>>Doctor</option>
+            <option value="nurse" <?= $user['role'] == 'nurse' ? 'selected' : '' ?>>Nurse</option>
+            <option value="patient" <?= $user['role'] == 'patient' ? 'selected' : '' ?>>Patient</option>
+          </select>
+        </div>
 
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Enter an email">
-          </div>
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select name="status" class="form-control">
+            <option value="active" <?= $user['status'] == 'active' ? 'selected' : '' ?>>Active</option>
+            <option value="inactive" <?= $user['status'] == 'inactive' ? 'selected' : '' ?>>Inactive</option>
+          </select>
+        </div>
 
-          <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" name="phone" placeholder="Enter a phone number">
-          </div>
-
-          <div class="form-actions">
-            <button type="submit" class="button add-btn">Update User</button>
-          </div>
-        </form>
-      </div>
+        <div class="form-action">
+          <button type="submit" class="button">Save Changes</button>
+        </div>
+      </form>
+    </main>
     </div>
   </div>
 </body>
-
 </html>

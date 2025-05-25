@@ -1,4 +1,24 @@
+<?php
+include 'config.php';
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $full_name = $_POST['full_name'];
+    $email = $_POST['email'];
+    $password = md5($_POST['password']); // Hoặc dùng password_hash() nếu muốn bảo mật hơn
+    $role = $_POST['role'];
+    $status = $_POST['status'];
+
+    $stmt = $conn->prepare("INSERT INTO users (full_name, email, password, role, status) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $full_name, $email, $password, $role, $status);
+    $stmt->execute();
+
+    $new_user_id = $stmt->insert_id;
+
+    // Chuyển hướng sang trang chi tiết
+    header("Location: manage_users_detail.php?id=$new_user_id");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,16 +31,10 @@
 </head>
 
 <body>
-  <header class="page-header">
-    <div class="logo">
-      <img src="assets:icons/healthcare.png" alt="Hospital Logo" class="logo-image">
-      <span class="logo-text">Hospital's Name</span>
-    </div>
-  </header>
-
   <div class="container">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" style = "width: 120px">
+      <div class="site-title">Hospital's Name</div>
       <ul class="sidebar-menu">
         <li><a href="index.php">Home</a></li>
         <li class="active"><a href="manage_users.php">Manage Users</a></li>
@@ -37,38 +51,44 @@
         <h2>Add Users</h2>
       </div>
 
-      <div class="card">
-        <form class="add-user-form">
-          <div class="form-group">
-            <label for="fullname">Full Name</label>
-            <input type="text" id="fullname" name="fullname" placeholder="Enter user's name">
-          </div>
+      <form method="post">
+        <div class="form-group">
+          <label for="full_name">Full Name</label>
+          <input type="text" name="full_name" class="form-control" required>
+        </div>
 
-          <div class="form-group">
-            <label for="role">Role</label>
-            <select id="role" name="role">
-              <option value="">Select a role</option>
-              <option value="doctor">Doctor</option>
-              <option value="nurse">Nurse</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
 
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Enter an email">
-          </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" name="password" class="form-control" required>
+        </div>
 
-          <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" name="phone" placeholder="Enter a phone number">
-          </div>
+        <div class="form-group">
+          <label for="role">Role</label>
+          <select name="role" class="form-control" required>
+            <option value="admin">Admin</option>
+            <option value="doctor">Doctor</option>
+            <option value="nurse">Nurse</option>
+            <option value="patient">Patient</option>
+          </select>
+        </div>
 
-          <div class="form-actions">
-            <button type="submit" class="button add-btn">Add User</button>
-          </div>
-        </form>
-      </div>
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select name="status" class="form-control">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="form-action">
+          <button type="submit" class="button">Add User</button>
+        </div>
+      </form>
     </div>
   </div>
 </body>

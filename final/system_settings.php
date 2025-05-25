@@ -1,3 +1,39 @@
+<?php
+include 'config.php';
+session_start();
+
+$message = '';
+$admin_id = $_SESSION['admin_id']; // nếu bạn đang dùng users thì thay bằng user_id và bảng users
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
+    $current = md5($_POST['current_password']);
+    $new = $_POST['new_password'];
+    $confirm = $_POST['confirm_password'];
+
+    if ($new !== $confirm) {
+        $message = "❌ Mật khẩu xác nhận không trùng khớp.";
+    } elseif (strlen($new) < 8) {
+        $message = "❌ Mật khẩu phải có ít nhất 8 ký tự.";
+    } else {
+        // Lấy mật khẩu cũ
+        $stmt = $conn->prepare("SELECT password FROM admins WHERE id = ?");
+        $stmt->bind_param("i", $admin_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $admin = $result->fetch_assoc();
+
+        if ($admin && $admin['password'] === $current) {
+            $new_hashed = md5($new);
+            $update = $conn->prepare("UPDATE admins SET password = ? WHERE id = ?");
+            $update->bind_param("si", $new_hashed, $admin_id);
+            $update->execute();
+            $message = "✅ Đổi mật khẩu thành công.";
+        } else {
+            $message = "❌ Mật khẩu hiện tại không chính xác.";
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,21 +46,10 @@
 </head>
 
 <body>
-  <header class="page-header">
-    <div class="logo">
-      <img src="assets:icons/healthcare.png" alt="Hospital Logo" class="logo-image">
-      <span class="logo-text">Hospital's Name</span>
-    </div>
-  </header>
-  <div class="page-header">
-    <div class="logo">
-      <span>Admin-System Settings</span>
-    </div>
-  </div>
-
   <div class="container">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" style = "width: 120px">
+      <div class="site-title">Hospital's Name</div>
       <ul class="sidebar-menu">
         <li><a href="index.php">Home</a></li>
         <li><a href="manage_users.php">Manage Users</a></li>
@@ -58,8 +83,14 @@
         <div class="card">
           <div class="card-header">
             <h3>Change Password</h3>
+            <?php if (!empty($message)): ?>
+                <p style="color:<?= strpos($message, '✅') === 0 ? 'green' : 'red' ?>;">
+    <?= $message ?>
+  </p>
+<?php endif; ?>
+
           </div>
-          <form action="change_password.php" method="POST">
+          <form method="POST">
             <div class="info-grid">
               <div class="info-label">Current Password</div>
               <input type="password" name="current_password" required>
@@ -85,8 +116,10 @@
 
 
         <div class="form-action">
-          <button type="submit">Save Settings</button>
-        </div>
+  <a href="logout.php" class="button">Logout</a>
+  <button type="submit" name="save_settings">Save Settings</button>
+</div>
+
 
     </div>
   </div>

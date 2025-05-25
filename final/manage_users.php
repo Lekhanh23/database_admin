@@ -1,3 +1,7 @@
+<?php
+include 'config.php';
+$result = $conn->query("SELECT * FROM users");
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,21 +14,10 @@
 </head>
 
 <body>
-  <header class="page-header">
-    <div class="logo">
-      <img src="assets:icons/healthcare.png" alt="Hospital Logo" class="logo-image">
-      <span class="logo-text">Hospital's Name</span>
-    </div>
-  </header>
-  <div class="page-header">
-    <div class="logo">
-      <span>Admin-Manage Users</span>
-    </div>
-  </div>
-
   <div class="container">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" style = "width: 150px">
+      <div class="site-title">Hospital's Name</div>
       <ul class="sidebar-menu">
         <li><a href="index.php">Home</a></li>
         <li class="active"><a href="manage_users.php">Manage Users</a></li>
@@ -48,67 +41,37 @@
       <table>
         <thead>
           <tr>
-            <th>User's Name</th>
+          <th>Full Name</th>
+            <th>Email</th>
             <th>Role</th>
             <th>Date</th>
-            <th>Time</th>
             <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
+        <?php while ($row = $result->fetch_assoc()) { ?>
           <tr>
-            <td class="placeholder-block"><a href="manage_users_detail.php" class="user-link">John Doe</a></td>
-            <td class="placeholder-block">Doctor</td>
-            <td class="placeholder-block">17/05/2020</td>
-            <td class="placeholder-block">10:35:02</td>
-            <td class="placeholder-block">Active</td>
+          <td class="placeholder-block">
+              <a href="manage_users_detail.php?id=<?= $row['id'] ?>">
+                <?= htmlspecialchars($row['full_name']) ?>
+              </a>
+            </td>
+            <td class="placeholder-block"><?= htmlspecialchars($row['email']) ?></td>
+            <td class="placeholder-block"><?= ucfirst($row['role']) ?></td>
+            <td class="placeholder-block"><?= $row['created_date'] ?></td>
+            <td class="placeholder-block"><?= ucfirst($row['status']) ?></td>
+            <td class="placeholder-block">
+              <a href="edit_user.php?id=<?= $row['id'] ?>" class="button">Edit</a>
+              <a href="delete_user.php?id=<?= $row['id'] ?>" class="button" style="color:red" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
           </tr>
-          <tr>
-            <td class="placeholder-block"><a href="manage_users_detail.php" class="user-link">Khanh</a></td>
-            <td class="placeholder-block">Admin</td>
-            <td class="placeholder-block">12/06/2019</td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block">Active</td>
-          </tr>
-          <tr>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-          </tr>
-          <tr>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-          </tr>
-          <tr>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-          </tr>
-          <tr>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-          </tr>
-          <tr>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-            <td class="placeholder-block"></td>
-          </tr>
+          <?php } ?>
         </tbody>
       </table>
     </div>
   </div>
+  
 
   <script>
     document.querySelector('.menu-toggle').addEventListener('click', function () {

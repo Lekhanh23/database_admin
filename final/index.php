@@ -10,20 +10,10 @@
 </head>
 
 <body>
-  <header class="page-header">
-    <div class="logo">
-      <img src="assets:icons/healthcare.png" alt="Hospital Logo" class="logo-image">
-      <span class="logo-text">Hospital's Name</span>
-    </div>
-  </header>
-  <div class="page-header">
-    <div class="logo">
-      <span>Admin-Home</span>
-    </div>
-  </div>
   <div class="container">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" style = "width: 120px">
+      <div class="site-title">Hospital's Name</div>
       <ul class="sidebar-menu">
         <li class="active"><a href="index.php">Home</a></li>
         <li><a href="manage_users.php">Manage Users</a></li>
@@ -58,9 +48,9 @@
         <div class="card">
           <h2><a href="manage_users.php">Manage Users</a></h2>
           <div class="card-content">
-            <div class="placeholder-block">John Doe</div>
+            <div class="placeholder-block">Lê Khanh</div>
             <br>
-            <div class="placeholder-block">Admin 2</div>
+            <div class="placeholder-block">Minh Tâm</div>
           </div>
         </div>
 
@@ -74,17 +64,17 @@
         <div class="card">
           <h2><a href="view_appointments.php">View Appointments</a></h2>
           <div class="card-content">
-            <div class="placeholder-block">Surgery - 17:00</div>
+            <div class="placeholder-block">Minh Tâm - Clinical Department - 09:00</div>
             <br>
-            <div class="placeholder-block">Dermatology - 10:00</div>
+            <div class="placeholder-block">Alice - Supporting Department - 21:00</div>
             <br>
-            <div class="placeholder-block">Internal Medicine - 8:00</div>
+            <div class="placeholder-block">Vân - Supporting Department - 17:00 </div>
             <br>
-            <div class="placeholder-block">Pediatrics - 12:00</div>
+            <div class="placeholder-block">John - Clinical Department - 15:00</div>
             <br>
-            <div class="placeholder-block">Physiotherapy and Rehabilitation - 14:00</div>
+            <div class="placeholder-block">Hồng Ngọc - Paraclinical Department - 09:00</div>
             <br>
-            <div class="placeholder-block">Laboratory Medicine - 7:00</div>
+            <div class="placeholder-block">Duy Anh - Paraclinical Department - 15:00 </div>
           </div>
         </div>
 

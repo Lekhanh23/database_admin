@@ -1,3 +1,24 @@
+<?php
+include 'config.php';
+
+if (!isset($_GET['id'])) {
+    echo "User ID is missing.";
+    exit();
+}
+
+$id = intval($_GET['id']);
+
+$stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+if (!$user) {
+    echo "User not found.";
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,21 +31,10 @@
 </head>
 
 <body>
-  <header class="page-header">
-    <div class="logo">
-      <img src="assets:icons/healthcare.png" alt="Hospital Logo" class="logo-image">
-      <span class="logo-text">Hospital's Name</span>
-    </div>
-  </header>
-  <div class="page-header">
-    <div class="logo">
-      <span>Admin-User Details</span>
-    </div>
-  </div>
-
   <div class="container">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" style = "width: 120px">
+      <div class="site-title">Hospital's Name</div>
       <ul class="sidebar-menu">
         <li><a href="index.php">Home</a></li>
         <li class="active"><a href="manage_users.php">Manage Users</a></li>
@@ -49,37 +59,33 @@
           <div class="round">
             <!-- Add user image here if available -->
           </div>
-          <div class="user-detail-card">
-            <h2>USER'S INFORMATION</h2>
-            <div class="user-avatar">
-              <div class="avatar-circle"></div>
-            </div>
-            <div class="user-info">
-              <div class="info-group">
-                <label>Full Name:</label>
-                <span class="info-value">John Doe</span>
-              </div>
-              <div class="info-group">
-                <label>Phone Number:</label>
-                <span class="info-value">+1234567890</span>
-              </div>
-              <div class="info-group">
-                <label>Email:</label>
-                <span class="info-value">johndoe@example.com</span>
-              </div>
-              <div class="info-group">
-                <label>Role:</label>
-                <span class="info-value">Doctor</span>
-              </div>
-              <div class="info-group">
-                <label>Status:</label>
-                <span class="info-value">Active</span>
-              </div>
-            </div>
-          </div>
-        </div>
+          <main class="main-content">
+      <div class="header">
+        <h1>User Details</h1>
       </div>
 
+      <div class="detail-section">
+        <div class="detail-label">Full Name</div>
+        <div class="detail-value"><?= htmlspecialchars($user['full_name']) ?></div>
+
+        <div class="detail-label">Email</div>
+        <div class="detail-value"><?= htmlspecialchars($user['email']) ?></div>
+
+        <div class="detail-label">Role</div>
+        <div class="detail-value"><?= ucfirst($user['role']) ?></div>
+
+        <div class="detail-label">Created Date</div>
+        <div class="detail-value"><?= $user['created_date'] ?></div>
+
+        <div class="detail-label">Status</div>
+        <div class="detail-value"><?= ucfirst($user['status']) ?></div>
+      </div>
+
+      <div class="form-action">
+        <a href="edit_user.php?id=<?= $user['id'] ?>" class="button">Edit</a>
+        <a href="delete_user.php?id=<?= $user['id'] ?>" class="button" style="color:red" onclick="return confirm('Are you sure?')">Delete</a>
+      </div>
+    </main>
     </div>
   </div>
 </body>

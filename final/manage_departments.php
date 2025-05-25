@@ -11,21 +11,10 @@
 </head>
 
 <body>
-  <header class="page-header">
-    <div class="logo">
-      <img src="assets:icons/healthcare.png" alt="Hospital Logo" class="logo-image">
-      <span class="logo-text">Hospital's Name</span>
-    </div>
-  </header>
-  <div class="page-header">
-    <div class="logo">
-      <span>Admin-Manage Users</span>
-    </div>
-  </div>
-
   <div class="container">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" style = "width: 120px">
+      <div class="site-title">Hospital's Name</div>
       <ul class="sidebar-menu">
         <li><a href="index.php">Home</a></li>
         <li><a href="manage_users.php">Manage Users</a></li>
@@ -50,7 +39,7 @@
       <!-- Department Cards Grid -->
       <div class="departments-grid">
         <div class="department-card">
-          <div class="department-name"><a href="manage_departments_detail.php">Clinical Department</a></div>
+          <div class="department-name"><a href="view_departments_list.php">Clinical Department</a></div>
         </div>
 
         <div class="department-card">
@@ -61,8 +50,7 @@
           <div class="department-name">Supporting Departments</div>
         </div>
 
-        <div class="department-card">
-          <div class="department-name">Others</div>
+
         </div>
       </div>
     </div>

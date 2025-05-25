@@ -1,3 +1,59 @@
+<?php
+include 'config.php';
+session_start();
+$error = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $role = $_POST['role'];
+    $email = $_POST['email'];
+    $password = md5($_POST['password']);
+    $admin_code_input = $_POST['admin_code'];
+
+    if ($role == 'admin') {
+        // Kiểm tra trong bảng admins
+        $stmt = $conn->prepare("SELECT * FROM admins WHERE email = ? AND password = ? AND status = 'active'");
+        $stmt->bind_param("ss", $email, $password);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($admin = $result->fetch_assoc()) {
+            if ($admin['admin_code'] !== $admin_code_input) {
+                $error = "Invalid admin authentication code.";
+            } else {
+                $_SESSION['admin_id'] = $admin['id'];
+                $_SESSION['role'] = 'admin';
+                header("Location: admin_dashboard.php");
+                exit();
+            }
+        } else {
+            $error = "Invalid admin credentials or inactive account.";
+        }
+    } else {
+        // Các role khác từ bảng users
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND password = ? AND role = ? AND status = 'active'");
+        $stmt->bind_param("sss", $email, $password, $role);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($user = $result->fetch_assoc()) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['role'] = $role;
+
+            if ($role == 'doctor') {
+                header("Location: doctor_dashboard.php");
+            } elseif ($role == 'nurse') {
+                header("Location: nurse_dashboard.php");
+            } elseif ($role == 'patient') {
+                header("Location: patient_dashboard.php");
+            }
+            exit();
+        } else {
+            $error = "Invalid credentials or inactive account.";
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
