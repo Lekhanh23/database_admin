@@ -42,7 +42,6 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `full_name`, `email`, `password`, `admin_code`, `status`, `created_at`) VALUES
-(1, 'Super Admin', 'admin@example.com', '0192023a7bbd73250516f069df18b500', '1', 'active', '2025-05-21 03:19:29'),
 (2, 'admin1', 'admin@gmail.com', 'admin1', '2', 'active', '2025-05-22 17:00:00');
 -- account admin1
 -- --------------------------------------------------------
